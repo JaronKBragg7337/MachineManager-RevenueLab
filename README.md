@@ -54,7 +54,12 @@ The first financial objective is to build a transparent reserve toward a $20 mon
 
 The dashboard is designed for a no-login public deployment. A deployment may choose whether finance is public exact, public rounded, masked, or private. A Bitcoin receiving address is treated as public proof data only when the operator explicitly enables it; private keys, seed phrases, extended private keys, credentials, and tokens are not part of the public contract.
 
-The public deployment URL will be added after the new GitHub repository and Pages destination are selected. Until then, this local preview is the source of truth for the UI build.
+Public links:
+
+- [Mission Control dashboard](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/)
+- [Source repository](https://github.com/JaronKBragg7337/MachineManager-RevenueLab)
+
+The dashboard is currently an honest design preview while the live worker adapter is being selected and benchmarked.
 
 ## Build documents
 

@@ -33,4 +33,4 @@ Last checkpoint: 2026-09-01
 
 ## Public handoff status
 
-No public repository or Pages URL has been created for this new project yet. The public destination should be selected after the first local build is verified; the old Puzzle #71 dashboard remains separate.
+The public repository is [MachineManager-RevenueLab](https://github.com/JaronKBragg7337/MachineManager-RevenueLab). Pages is configured for workflow deployment at [Mission Control](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/); the first deployment was still settling at this checkpoint, so the served URL remains to be verified.
