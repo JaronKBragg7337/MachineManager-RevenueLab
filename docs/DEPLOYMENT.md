@@ -7,4 +7,4 @@ The public site is hosted by GitHub Pages from the `main` branch and the reposit
 
 Publishing a new sanitized `dashboard/data/*.json` projection and pushing it to `main` refreshes the public page. The page is static and no-login; the local manager remains the source that produces the projection.
 
-The first deployment uses GitHub’s branch source because this repository does not require a build step. CI still runs the Python, JavaScript, and public-data checks on pushes and pull requests.
+The deployment uses GitHub’s branch source plus `.nojekyll` because this repository does not require a build step. CI still runs the Python, JavaScript, and public-data checks on pushes and pull requests.
