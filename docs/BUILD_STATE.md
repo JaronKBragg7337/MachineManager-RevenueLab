@@ -19,7 +19,8 @@ Last checkpoint: 2026-09-01
 - Compaction-resistant build state created.
 - Standard-library contracts, SQLite event ledger, preview publisher, and first dashboard shell implemented.
 - Local preview verified through the browser at `http://127.0.0.1:8765/` with working navigation and refresh.
-- Eleven core tests plus the new public-projection boundary test are passing.
+- A bounded synthetic runtime now publishes real work packets and manager state changes into the same SQLite/public projection path.
+- Thirteen core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 

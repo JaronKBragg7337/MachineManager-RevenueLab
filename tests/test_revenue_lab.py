@@ -11,6 +11,7 @@ from revenue_lab.models import EventRecord, FinanceSnapshot, VisibilityMode, as_
 from revenue_lab.privacy import project_finance, sanitize_snapshot, validate_public_payload
 from revenue_lab.preview import build_preview_snapshot
 from revenue_lab.publisher import publish_snapshot
+from revenue_lab.runtime import RevenueLabRuntime
 from revenue_lab.state import transition
 from revenue_lab.workers import BitcoinSha256dStratumSpec
 
@@ -121,6 +122,22 @@ class MissionContractTests(unittest.TestCase):
         self.assertEqual(spec.algorithm, "SHA-256d")
         self.assertIn("accepted_shares", spec.required_metrics)
         self.assertNotIn("KeyHunt", spec.adapter_id)
+
+    def test_synthetic_runtime_publishes_real_work_packets_and_closes_cleanly(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runtime = RevenueLabRuntime(root / "data", root / "state" / "events.sqlite3")
+            first = runtime.tick()
+            second = runtime.tick()
+            runtime.close()
+            self.assertEqual(first.mode, "synthetic-demo")
+            self.assertEqual(second.worker.state, "RUNNING")
+            self.assertEqual(len(second.work_packets), 2)
+            self.assertEqual(second.finance.money_received, 0.0)
+            with (root / "data" / "latest.json").open(encoding="utf-8") as handle:
+                public = json.load(handle)
+            self.assertEqual(public["status"], "STOPPED")
+            self.assertEqual(public["work_packets"][-1]["state"], "COMPLETE")
 
 
 if __name__ == "__main__":

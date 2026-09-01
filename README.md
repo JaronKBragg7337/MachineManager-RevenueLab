@@ -26,6 +26,14 @@ python -m http.server 8765 --directory dashboard
 
 Open `http://localhost:8765/`. The preview is deliberately marked as **DESIGN PREVIEW** and does not claim that a live mining worker or wallet is connected.
 
+To exercise the continuous evidence path with a deterministic worker, run this in a second terminal:
+
+```powershell
+python scripts/run_demo_runtime.py --iterations 20 --interval 2
+```
+
+The page will show real synthetic packets and state changes as they are published. It remains marked **SYNTHETIC DEMO**; these packets are runtime evidence tests, not Bitcoin work or revenue.
+
 Run the standard-library test suite with:
 
 ```powershell
@@ -53,4 +61,3 @@ The public deployment URL will be added after the new GitHub repository and Page
 - [Project brief](docs/PROJECT_BRIEF.md) — the durable intent and decisions from the design conversation.
 - [Architecture](docs/ARCHITECTURE.md) — the interchangeable mission and evidence model.
 - [Build state](docs/BUILD_STATE.md) — the checkpoint that survives context compaction.
-
