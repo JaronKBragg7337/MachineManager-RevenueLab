@@ -20,6 +20,8 @@ The public projection should expose aggregate work and outcome signals, not a st
 - machine activity and power evidence;
 - payout estimate, confirmed credit, and receipt status.
 
+The adapter may write a small progress JSON report. The manager reads only the allowlisted aggregate fields in `revenue_lab/progress.py`; unknown fields are ignored and malformed reports fail closed.
+
 ## Lifecycle
 
 Every adapter implements:
@@ -33,6 +35,8 @@ recover(reason) -> outcome
 
 The manager combines process state, fresh progress, and resource evidence before declaring useful work. A live process with no advancing work is not healthy.
 
+`ProcessWorkerAdapter` supplies the generic external-process boundary. It launches only the configured command vector, keeps stdout/stderr out of the public projection, and reports `process_only` when no aggregate progress file is available. That state is intentionally insufficient for a healthy-work claim.
+
 ## Implementation sequence
 
 1. Select and document a worker implementation and pool lane.
@@ -43,4 +47,3 @@ The manager combines process state, fresh progress, and resource evidence before
 6. Only then enable unattended operation and public economic reconciliation.
 
 This keeps the control plane reusable and makes it possible to switch from pool mining to another mission without rewriting the dashboard.
-

@@ -12,6 +12,9 @@ from revenue_lab.privacy import project_finance, sanitize_snapshot, validate_pub
 from revenue_lab.preview import build_preview_snapshot
 from revenue_lab.publisher import publish_snapshot
 from revenue_lab.runtime import RevenueLabRuntime
+from revenue_lab.progress import ProgressParseError, parse_progress
+from revenue_lab.probes import parse_nvidia_csv
+from revenue_lab.process_worker import ProcessWorkerAdapter, ProcessWorkerSpec
 from revenue_lab.state import transition
 from revenue_lab.workers import BitcoinSha256dStratumSpec
 
@@ -138,6 +141,42 @@ class MissionContractTests(unittest.TestCase):
                 public = json.load(handle)
             self.assertEqual(public["status"], "STOPPED")
             self.assertEqual(public["work_packets"][-1]["state"], "COMPLETE")
+
+    def test_progress_parser_keeps_aggregate_fields_and_ignores_unknown_fields(self) -> None:
+        observation = parse_progress(
+            {
+                "worker_id": "btc-worker-001",
+                "state": "RUNNING",
+                "progress_cursor": "job-42",
+                "rate": 2.1,
+                "rate_unit": "GH/s",
+                "accepted_shares": 7,
+                "rejected_shares": 1,
+                "pool_connected": True,
+                "raw_log_line": "not included",
+            }
+        )
+        self.assertEqual(observation.metrics["accepted_shares"], 7)
+        self.assertNotIn("raw_log_line", observation.metrics)
+        with self.assertRaises(ProgressParseError):
+            parse_progress({"worker_id": "btc-worker-001"})
+
+    def test_nvidia_probe_parser_converts_memory_and_chooses_active_gpu(self) -> None:
+        snapshot = parse_nvidia_csv("12,40,15.5,100,2048\n78,61,81.0,2304,8188\n")
+        self.assertEqual(snapshot.gpu_utilization_pct, 78.0)
+        self.assertEqual(snapshot.vram_used_gb, 2.25)
+        self.assertEqual(snapshot.evidence_quality, "nvidia_smi")
+
+    def test_process_adapter_does_not_treat_process_liveness_as_useful_work(self) -> None:
+        spec = ProcessWorkerSpec(
+            worker_id="btc-worker-001",
+            worker_type="Bitcoin SHA-256d adapter",
+            executable="worker.exe",
+            arguments=("--configured-outside-repo",),
+        )
+        adapter = ProcessWorkerAdapter(spec)
+        self.assertEqual(spec.command[0], "worker.exe")
+        self.assertEqual(adapter.observe().evidence_quality, "not_started")
 
 
 if __name__ == "__main__":

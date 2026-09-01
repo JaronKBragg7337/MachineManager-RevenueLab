@@ -20,7 +20,9 @@ Last checkpoint: 2026-09-01
 - Standard-library contracts, SQLite event ledger, preview publisher, and first dashboard shell implemented.
 - Local preview verified through the browser at `http://127.0.0.1:8765/` with working navigation and refresh.
 - A bounded synthetic runtime now publishes real work packets and manager state changes into the same SQLite/public projection path.
-- Thirteen core tests plus the public-data validator are passing.
+- NVIDIA machine-probe parsing and an allowlisted worker-progress parser are now implemented.
+- A generic external-process adapter now separates launch/liveness from useful-progress evidence.
+- Sixteen core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 

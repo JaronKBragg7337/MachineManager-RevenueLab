@@ -14,6 +14,9 @@ from .models import (
 )
 from .state import can_transition, transition
 from .workers import BitcoinSha256dStratumSpec, WorkerAdapter, WorkerObservation
+from .probes import parse_nvidia_csv, sample_nvidia
+from .progress import ProgressParseError, parse_progress, read_progress
+from .process_worker import ProcessWorkerAdapter, ProcessWorkerSpec
 
 __all__ = [
     "AgentSnapshot",
@@ -31,4 +34,11 @@ __all__ = [
     "WorkerObservation",
     "can_transition",
     "transition",
+    "parse_nvidia_csv",
+    "sample_nvidia",
+    "ProgressParseError",
+    "parse_progress",
+    "read_progress",
+    "ProcessWorkerAdapter",
+    "ProcessWorkerSpec",
 ]
