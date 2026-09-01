@@ -109,6 +109,7 @@ The dashboard is currently an honest design preview while the live worker adapte
 - [Manager runtime](docs/MANAGER_RUNTIME.md) — progress evidence, bounded recovery, and reliability scenarios.
 - [CUDA benchmark](docs/CUDA_BENCHMARK.md) — the local known-vector and throughput check.
 - [Worker selection](docs/WORKER_SELECTION.md) — candidate audit and gates before pool connection.
+- [GBXminer build audit](docs/GBXMINER_BUILD.md) — why the first third-party candidate remains reference-only.
 - [Offline Stratum contract](docs/STRATUM_CONTRACT.md) — protocol and Bitcoin header/share math with no network access.
 - [Build state](docs/BUILD_STATE.md) — the checkpoint that survives context compaction.
 - [Deployment](docs/DEPLOYMENT.md) — how the public no-login dashboard is served.

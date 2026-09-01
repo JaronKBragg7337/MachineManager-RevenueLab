@@ -7,7 +7,7 @@ configuration.
 
 ## Current candidates
 
-### Primary candidate: GBXminer `develop`
+### Audited reference: GBXminer `develop`
 
 [GBXminer](https://github.com/d0wn3d/gbxminer/tree/develop) is the current
 provisional candidate because its public source advertises CUDA, SHA-256d,
@@ -23,9 +23,11 @@ Stratum tests, and API tests.
 
 The first native Windows solution build was not accepted as validation. The
 checked-in Visual Studio project imports `CUDA 9.0.props`, while this MSI has a
-newer CUDA toolchain. The newer CI route uses an MSYS2/autotools build and
-additional Windows link setup, so that route still needs an isolated build
-check. No GBXminer binary has been launched against a pool.
+newer CUDA toolchain. An isolated compatibility pass compiled the CUDA
+translation units for `sm_89`, but its final link mixed MSVC CUDA objects with
+MinGW C++ host objects and failed on unresolved C++ ABI/template symbols. No
+GBXminer binary was adopted or launched against a pool; the complete result is
+in the [GBXminer build audit](GBXMINER_BUILD.md).
 
 ### Local kernel benchmark
 

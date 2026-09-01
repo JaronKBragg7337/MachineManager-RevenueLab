@@ -36,18 +36,18 @@ Last checkpoint: 2026-09-01
 - A loopback-only mock Stratum server now passes the subscribe, authorize,
   notify, independent header reconstruction, target comparison, and submit
   sequence. It binds only to localhost during tests and uses no credentials.
-- GBXminer `develop` is recorded as the provisional Stratum worker candidate;
-  its source has a CUDA SHA-256d path, Stratum/GBT plumbing, and monitoring API,
-  but its checked-in Visual Studio project still imports CUDA 9.0 settings and
-  has not passed a native build on this machine. No live worker is attached.
-- Twenty-two core tests plus the public-data validator are passing.
+- GBXminer `develop` is recorded as an audited third-party reference, not an
+  accepted worker. Its CUDA translation units compile under an isolated CUDA
+  13 / `sm_89` compatibility pass, but the final link is blocked by the
+  upstream tree's mixed MSVC/MinGW C++ ABI. No GBXminer binary was adopted or
+  launched; see [the build audit](GBXMINER_BUILD.md).
+- Thirty-four core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 
-1. Connect a pinned worker implementation to the local mock and verify its
-   progress report against the allowlisted manager contract.
-2. Select and document the first Stratum worker implementation without
-   committing credentials.
+1. Implement or select a focused native Stratum worker and connect it to the
+   local mock without credentials.
+2. Verify its progress report against the allowlisted manager contract.
 3. Connect pool-job observations to the worker contract and economics ledger.
 4. Review the Live Reference Principle source before finalizing reference
    ingestion.
