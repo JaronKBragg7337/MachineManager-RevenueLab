@@ -29,6 +29,13 @@ Last checkpoint: 2026-09-01
   header before timing deterministic RTX 4060 work. A bounded 5,000,000-hash
   run passed the known vector and measured approximately 747 million hashes per
   second locally; it contacted no network and made no revenue claim.
+- An offline Stratum contract now validates `mining.notify` fields, builds
+  coinbase/merkle/header data, decodes compact targets, checks digest ordering,
+  and constructs submit parameters. It is transport-free: no pool has been
+  contacted and no revenue has been claimed.
+- A loopback-only mock Stratum server now passes the subscribe, authorize,
+  notify, independent header reconstruction, target comparison, and submit
+  sequence. It binds only to localhost during tests and uses no credentials.
 - GBXminer `develop` is recorded as the provisional Stratum worker candidate;
   its source has a CUDA SHA-256d path, Stratum/GBT plumbing, and monitoring API,
   but its checked-in Visual Studio project still imports CUDA 9.0 settings and
@@ -37,10 +44,13 @@ Last checkpoint: 2026-09-01
 
 ## Next implementation checkpoint
 
-1. Select and document the first Stratum worker implementation without
+1. Connect a pinned worker implementation to the local mock and verify its
+   progress report against the allowlisted manager contract.
+2. Select and document the first Stratum worker implementation without
    committing credentials.
-2. Connect pool-job observations to the worker contract and economics ledger.
-3. Review the Live Reference Principle source before finalizing reference ingestion.
+3. Connect pool-job observations to the worker contract and economics ledger.
+4. Review the Live Reference Principle source before finalizing reference
+   ingestion.
 
 ## Public handoff status
 

@@ -11,6 +11,10 @@ The first mission is a Bitcoin proof-of-work experiment. Bitcoin is the first wo
 - An honest dashboard shell that distinguishes design-preview data from live worker evidence.
 - A SQLite event-ledger boundary for local runtime history.
 - A worker-adapter boundary for a future CUDA SHA-256d Stratum miner.
+- An offline Stratum contract for validating jobs, building headers, checking
+  targets, and constructing submit parameters without contacting a pool.
+- A loopback-only mock Stratum server that independently verifies submitted
+  shares before any real endpoint is considered.
 - A credential-free CUDA SHA-256d benchmark that verifies the Bitcoin genesis
   header before measuring bounded RTX 4060 work.
 - A reusable manager loop that distinguishes fresh progress from process liveness,
@@ -105,5 +109,6 @@ The dashboard is currently an honest design preview while the live worker adapte
 - [Manager runtime](docs/MANAGER_RUNTIME.md) — progress evidence, bounded recovery, and reliability scenarios.
 - [CUDA benchmark](docs/CUDA_BENCHMARK.md) — the local known-vector and throughput check.
 - [Worker selection](docs/WORKER_SELECTION.md) — candidate audit and gates before pool connection.
+- [Offline Stratum contract](docs/STRATUM_CONTRACT.md) — protocol and Bitcoin header/share math with no network access.
 - [Build state](docs/BUILD_STATE.md) — the checkpoint that survives context compaction.
 - [Deployment](docs/DEPLOYMENT.md) — how the public no-login dashboard is served.
