@@ -11,6 +11,8 @@ The first mission is a Bitcoin proof-of-work experiment. Bitcoin is the first wo
 - An honest dashboard shell that distinguishes design-preview data from live worker evidence.
 - A SQLite event-ledger boundary for local runtime history.
 - A worker-adapter boundary for a future CUDA SHA-256d Stratum miner.
+- A credential-free CUDA SHA-256d benchmark that verifies the Bitcoin genesis
+  header before measuring bounded RTX 4060 work.
 - A reusable manager loop that distinguishes fresh progress from process liveness,
   recovers bounded failures, and escalates repeated failures.
 - Deterministic crash, stall, false-liveness, and repeated-failure scenarios.
@@ -47,6 +49,17 @@ python scripts/run_reliability_scenarios.py
 The command writes an ignored local report under `runtime/` and runs five
 scenarios: healthy progress, a one-time crash, a one-time stall, a process-only
 false-liveness signal, and a repeated failure that must escalate.
+
+Verify and measure the local Bitcoin SHA-256d kernel without a pool, wallet, or
+network connection:
+
+```powershell
+python scripts/run_cuda_benchmark.py --hashes 5000000
+```
+
+The benchmark checks the Bitcoin genesis-header digest first and reports a raw
+local GPU rate only when that check passes. It does not claim mining revenue;
+see [the benchmark contract](docs/CUDA_BENCHMARK.md).
 
 Run the reusable manager as a local service (still synthetic until the live
 worker adapter is selected):

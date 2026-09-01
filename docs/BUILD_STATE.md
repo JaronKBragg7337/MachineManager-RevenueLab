@@ -5,7 +5,7 @@ Last checkpoint: 2026-09-01
 ## Current checkpoint
 
 - New repository: `machine-manager-revenue-lab` under the Codex Active projects workspace.
-- Status: foundation and reusable manager runtime build in progress.
+- Status: foundation, reusable manager runtime, and local CUDA proof-of-work benchmark are complete; live pool integration remains pending.
 - The legacy Puzzle #71 MachineManager remains a separate reference and is not being modified by this project.
 - No live Bitcoin mining worker has been connected here yet.
 - No wallet address, private key, seed, credential, token, pool secret, or raw machine log has been added here.
@@ -25,14 +25,18 @@ Last checkpoint: 2026-09-01
 - A reusable mission manager now records every observation, detects false liveness and stalls, performs bounded recovery, and escalates repeated failure.
 - Deterministic reliability workers and a local scenario runner cover healthy progress, crash, stall, false liveness, and repeated failure.
 - A local managed-runtime entry point can run bounded or continuous synthetic service cycles while keeping the checked-in public preview untouched by default.
+- A credential-free CUDA SHA-256d benchmark now verifies the Bitcoin genesis
+  header before timing deterministic RTX 4060 work. A bounded 5,000,000-hash
+  run passed the known vector and measured approximately 747 million hashes per
+  second locally; it contacted no network and made no revenue claim.
 - Twenty-two core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 
-1. Add a real manager service entry point and synthetic worker scenarios.
-2. Choose and benchmark a SHA-256d worker without committing credentials.
-3. Connect pool observations to the worker contract and economics ledger.
-4. Review the Live Reference Principle source before finalizing reference ingestion.
+1. Select and document the first Stratum worker implementation without
+   committing credentials.
+2. Connect pool-job observations to the worker contract and economics ledger.
+3. Review the Live Reference Principle source before finalizing reference ingestion.
 
 ## Public handoff status
 
