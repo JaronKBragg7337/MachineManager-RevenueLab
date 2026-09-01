@@ -24,6 +24,7 @@ Last checkpoint: 2026-09-01
 - A generic external-process adapter now separates launch/liveness from useful-progress evidence.
 - A reusable mission manager now records every observation, detects false liveness and stalls, performs bounded recovery, and escalates repeated failure.
 - Deterministic reliability workers and a local scenario runner cover healthy progress, crash, stall, false liveness, and repeated failure.
+- A local managed-runtime entry point can run bounded or continuous synthetic service cycles while keeping the checked-in public preview untouched by default.
 - Twenty-two core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint

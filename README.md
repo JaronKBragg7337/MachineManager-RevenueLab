@@ -48,6 +48,16 @@ The command writes an ignored local report under `runtime/` and runs five
 scenarios: healthy progress, a one-time crash, a one-time stall, a process-only
 false-liveness signal, and a repeated failure that must escalate.
 
+Run the reusable manager as a local service (still synthetic until the live
+worker adapter is selected):
+
+```powershell
+python scripts/run_managed_runtime.py --iterations 20 --interval 2
+```
+
+Leaving out `--iterations` keeps the manager running continuously. Its default
+JSON projection and SQLite ledger live under the ignored `runtime/` directory.
+
 Run the standard-library test suite with:
 
 ```powershell

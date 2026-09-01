@@ -46,6 +46,24 @@ The report and per-scenario projections are written under the ignored
 `runtime/` directory. The scenarios are intentionally not Bitcoin mining and
 do not use the GPU, pool, wallet, or external accounts.
 
+Run the reusable manager itself with a bounded synthetic service:
+
+```powershell
+python scripts/run_managed_runtime.py --iterations 20 --interval 2
+```
+
+For a continuous local service, leave out `--iterations` (it defaults to zero):
+
+```powershell
+python scripts/run_managed_runtime.py --interval 15
+```
+
+The default projection is kept under ignored `runtime/managed-dashboard/` so a
+local demo cannot silently replace the checked-in public preview. To serve the
+managed projection locally, point `--dashboard-data` at a directory served by
+an HTTP server. The service still uses only the deterministic synthetic worker
+until a real adapter is explicitly configured.
+
 ## Future live lane
 
 The first live adapter can implement the existing `WorkerAdapter` protocol and
