@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "mode": "design-preview",
   "status": "DESIGN_PREVIEW",
-  "updated_at": "2026-09-01T18:54:15Z",
+  "updated_at": "2026-09-01T18:59:55Z",
   "mission": {
     "mission_id": "btc-pool-experiment",
     "name": "Bitcoin proof-of-work experiment",
@@ -12,7 +12,7 @@
     "success_measure": "Confirmed payout and money received are greater than the measured mission-attributed cost.",
     "target_amount": 20.0,
     "target_currency": "USD",
-    "created_at": "2026-09-01T18:54:15Z",
+    "created_at": "2026-09-01T18:59:55Z",
     "reference_id": "ref-first-mission"
   },
   "worker": {
@@ -41,7 +41,7 @@
       "state": "READY",
       "current_action": "Waiting for the first live worker adapter.",
       "work_packets": 2,
-      "last_update": "2026-09-01T18:54:15Z",
+      "last_update": "2026-09-01T18:59:55Z",
       "capability_basis": "tested_contract"
     },
     {
@@ -52,7 +52,7 @@
       "state": "READY",
       "current_action": "Projecting work and economics into public JSON.",
       "work_packets": 1,
-      "last_update": "2026-09-01T18:54:15Z",
+      "last_update": "2026-09-01T18:59:55Z",
       "capability_basis": "tested_contract"
     }
   ],
@@ -65,7 +65,7 @@
     "vram_total_gb": null,
     "cpu_utilization_pct": null,
     "uptime_hours": null,
-    "sampled_at": "2026-09-01T18:54:15Z",
+    "sampled_at": "2026-09-01T18:59:55Z",
     "evidence_quality": "awaiting_worker"
   },
   "finance": {
@@ -97,8 +97,8 @@
       "output_summary": "Mission and worker boundaries do not hard-code KeyHunt or one provider.",
       "actor": "revenue-lab-builder",
       "source": "local_build",
-      "started_at": "2026-09-01T18:54:15Z",
-      "completed_at": "2026-09-01T18:54:15Z",
+      "started_at": "2026-09-01T18:59:55Z",
+      "completed_at": "2026-09-01T18:59:55Z",
       "duration_seconds": 0.0,
       "evidence_event_id": "preview-foundation-001"
     },
@@ -112,15 +112,15 @@
       "output_summary": "Dashboard schema separates estimated credit, confirmed payout, and money received.",
       "actor": "revenue-lab-builder",
       "source": "local_build",
-      "started_at": "2026-09-01T18:54:15Z",
-      "completed_at": "2026-09-01T18:54:15Z",
+      "started_at": "2026-09-01T18:59:55Z",
+      "completed_at": "2026-09-01T18:59:55Z",
       "duration_seconds": 0.0,
       "evidence_event_id": "preview-dashboard-001"
     }
   ],
   "events": [
     {
-      "timestamp": "2026-09-01T18:54:15Z",
+      "timestamp": "2026-09-01T18:59:55Z",
       "event_id": "preview-foundation-001",
       "objective_id": "btc-pool-experiment",
       "job_id": "job-revenue-lab-foundation",
@@ -142,7 +142,7 @@
       "public_summary": "Core contracts are ready for a real worker adapter."
     },
     {
-      "timestamp": "2026-09-01T18:54:15Z",
+      "timestamp": "2026-09-01T18:59:55Z",
       "event_id": "preview-dashboard-001",
       "objective_id": "btc-pool-experiment",
       "job_id": "job-revenue-lab-foundation",
@@ -170,8 +170,8 @@
       "title": "Owner mission brief",
       "kind": "design_input",
       "source": "owner conversation",
-      "observed_at": "2026-09-01T18:54:15Z",
-      "review_by": "2026-10-01T18:54:15Z",
+      "observed_at": "2026-09-01T18:59:55Z",
+      "review_by": "2026-10-01T18:59:55Z",
       "status": "active_design_input"
     },
     {
@@ -179,8 +179,8 @@
       "title": "Live Reference Principle",
       "kind": "architecture_reference",
       "source": "pending source review",
-      "observed_at": "2026-09-01T18:54:15Z",
-      "review_by": "2026-10-01T18:54:15Z",
+      "observed_at": "2026-09-01T18:59:55Z",
+      "review_by": "2026-10-01T18:59:55Z",
       "status": "pending_source_location"
     }
   ],

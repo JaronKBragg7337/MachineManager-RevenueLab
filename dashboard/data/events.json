@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-09-01T18:54:15Z",
+    "timestamp": "2026-09-01T18:59:55Z",
     "event_id": "preview-foundation-001",
     "objective_id": "btc-pool-experiment",
     "job_id": "job-revenue-lab-foundation",
@@ -22,7 +22,7 @@
     "public_summary": "Core contracts are ready for a real worker adapter."
   },
   {
-    "timestamp": "2026-09-01T18:54:15Z",
+    "timestamp": "2026-09-01T18:59:55Z",
     "event_id": "preview-dashboard-001",
     "objective_id": "btc-pool-experiment",
     "job_id": "job-revenue-lab-foundation",
