@@ -29,6 +29,10 @@ Last checkpoint: 2026-09-01
   header before timing deterministic RTX 4060 work. A bounded 5,000,000-hash
   run passed the known vector and measured approximately 747 million hashes per
   second locally; it contacted no network and made no revenue claim.
+- GBXminer `develop` is recorded as the provisional Stratum worker candidate;
+  its source has a CUDA SHA-256d path, Stratum/GBT plumbing, and monitoring API,
+  but its checked-in Visual Studio project still imports CUDA 9.0 settings and
+  has not passed a native build on this machine. No live worker is attached.
 - Twenty-two core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint

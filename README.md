@@ -103,5 +103,7 @@ The dashboard is currently an honest design preview while the live worker adapte
 - [Project brief](docs/PROJECT_BRIEF.md) — the durable intent and decisions from the design conversation.
 - [Architecture](docs/ARCHITECTURE.md) — the interchangeable mission and evidence model.
 - [Manager runtime](docs/MANAGER_RUNTIME.md) — progress evidence, bounded recovery, and reliability scenarios.
+- [CUDA benchmark](docs/CUDA_BENCHMARK.md) — the local known-vector and throughput check.
+- [Worker selection](docs/WORKER_SELECTION.md) — candidate audit and gates before pool connection.
 - [Build state](docs/BUILD_STATE.md) — the checkpoint that survives context compaction.
 - [Deployment](docs/DEPLOYMENT.md) — how the public no-login dashboard is served.
