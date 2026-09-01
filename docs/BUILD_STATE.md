@@ -33,4 +33,4 @@ Last checkpoint: 2026-09-01
 
 ## Public handoff status
 
-The public repository is [MachineManager-RevenueLab](https://github.com/JaronKBragg7337/MachineManager-RevenueLab). Pages is configured for workflow deployment at [Mission Control](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/); the first deployment was still settling at this checkpoint, so the served URL remains to be verified.
+The public repository is [MachineManager-RevenueLab](https://github.com/JaronKBragg7337/MachineManager-RevenueLab). Pages is configured for the `main` branch root and forwards to [Mission Control](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/dashboard/). The first branch-source deployment is pending verification after the next push.

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "mode": "design-preview",
-  "updated_at": "2026-09-01T18:59:55Z",
+  "updated_at": "2026-09-01T19:10:51Z",
   "scenarios": [
     {
       "scenario_id": "public-projection-sanitization-001",
