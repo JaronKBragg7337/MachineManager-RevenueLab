@@ -1,0 +1,44 @@
+# Local runtime and credentials
+.env
+.env.*
+!.env.example
+secrets/
+*.token
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*password*
+*private*
+*seed*
+*mnemonic*
+*xprv*
+
+# Local state and logs
+runtime/
+state/
+logs/
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.pid
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# JavaScript/tooling
+node_modules/
+dist/
+.DS_Store
+
+# Never publish private dashboard projections
+dashboard/data/private*.json
+dashboard/data/*-local.json
+

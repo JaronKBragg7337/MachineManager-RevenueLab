@@ -1,0 +1,9 @@
+[project]
+name = "machine-manager-revenue-lab"
+version = "0.1.0"
+description = "Evidence-first orchestration for persistent AI-assisted revenue experiments"
+requires-python = ">=3.12"
+
+[tool.machine-manager]
+public-dashboard = "dashboard/"
+preview-command = "python scripts/publish_preview.py"

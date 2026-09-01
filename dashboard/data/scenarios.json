@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "mode": "design-preview",
+  "updated_at": "2026-09-01T18:54:15Z",
+  "scenarios": [
+    {
+      "scenario_id": "public-projection-sanitization-001",
+      "category": "public_data",
+      "status": "PASS",
+      "result": "Forbidden field names are rejected before publication.",
+      "source": "local test suite"
+    },
+    {
+      "scenario_id": "bitcoin-worker-live-001",
+      "category": "worker_integration",
+      "status": "NOT_RUN",
+      "result": "Awaiting a selected SHA-256d worker and pool configuration.",
+      "source": "planned experiment"
+    },
+    {
+      "scenario_id": "payout-reconciliation-001",
+      "category": "economics",
+      "status": "NOT_RUN",
+      "result": "Awaiting confirmed pool credit and a receiving address.",
+      "source": "planned experiment"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "timestamp": "2026-09-01T18:54:15Z",
+    "event_id": "preview-foundation-001",
+    "objective_id": "btc-pool-experiment",
+    "job_id": "job-revenue-lab-foundation",
+    "worker_id": null,
+    "actor": "revenue-lab-builder",
+    "event_type": "foundation_checkpoint",
+    "previous_state": null,
+    "new_state": "FOUNDATION_READY",
+    "metrics": {},
+    "action": "Defined the interchangeable mission, evidence, finance, and worker contracts.",
+    "outcome": "Ready for adapter implementation; no live mining claim made.",
+    "artifact_refs": [
+      "docs/ARCHITECTURE.md",
+      "revenue_lab/models.py"
+    ],
+    "error": null,
+    "duration": null,
+    "source": "local_build",
+    "public_summary": "Core contracts are ready for a real worker adapter."
+  },
+  {
+    "timestamp": "2026-09-01T18:54:15Z",
+    "event_id": "preview-dashboard-001",
+    "objective_id": "btc-pool-experiment",
+    "job_id": "job-revenue-lab-foundation",
+    "worker_id": null,
+    "actor": "revenue-lab-builder",
+    "event_type": "public_projection_ready",
+    "previous_state": null,
+    "new_state": "DESIGN_PREVIEW",
+    "metrics": {},
+    "action": "Published the first no-login dashboard projection.",
+    "outcome": "The page is explicit about preview data and awaits live worker evidence.",
+    "artifact_refs": [
+      "dashboard/index.html",
+      "dashboard/data/latest.json"
+    ],
+    "error": null,
+    "duration": null,
+    "source": "local_build",
+    "public_summary": "Public Mission Control preview is available."
+  }
+]

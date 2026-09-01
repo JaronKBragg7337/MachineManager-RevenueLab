@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07111f" />
+    <meta
+      name="description"
+      content="MachineManager Revenue Lab: a public evidence view of persistent AI-assisted work."
+    />
+    <title>Mission Control · Revenue Lab</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brand" href="#overview" aria-label="Revenue Lab home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>
+            <strong>MISSION CONTROL</strong>
+            <small>MachineManager · Revenue Lab</small>
+          </span>
+        </a>
+        <div class="topbar-actions">
+          <span class="live-pill" id="modeBadge"><i></i> Loading evidence</span>
+          <button class="button button-quiet" id="refreshButton" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <nav class="section-nav" aria-label="Mission Control sections">
+        <a class="active" href="#overview">Control</a>
+        <a href="#work">Work</a>
+        <a href="#machine">Machine proof</a>
+        <a href="#economics">Economics</a>
+        <a href="#evidence">Evidence</a>
+      </nav>
+
+      <main>
+        <section class="hero section-anchor" id="overview">
+          <div class="hero-copy">
+            <p class="eyebrow">PERSISTENT WORK · PUBLIC EVIDENCE</p>
+            <h1>Turn useful compute into <em>measured progress.</em></h1>
+            <p class="hero-lede">
+              Mission Control makes the work visible from first packet to verified outcome.
+              Bitcoin is the first lane; the control plane is built to change lanes.
+            </p>
+            <div class="hero-tags">
+              <span>Interchangeable missions</span>
+              <span>AI + worker proof</span>
+              <span>No-login public view</span>
+            </div>
+          </div>
+          <div class="hero-signal panel" aria-live="polite">
+            <div class="panel-kicker"><span>LIVE MACHINE SIGNAL</span><span id="updatedLabel">Awaiting snapshot</span></div>
+            <div class="signal-state" id="systemState">LOADING</div>
+            <p id="systemMessage">Reading the latest sanitized evidence projection.</p>
+            <div class="signal-row">
+              <div><span>Worker</span><strong id="signalWorker">—</strong></div>
+              <div><span>Mission</span><strong id="signalMission">—</strong></div>
+              <div><span>Evidence</span><strong id="signalEvidence">—</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="overview-grid">
+          <article class="panel mission-card">
+            <div class="panel-kicker"><span>ACTIVE MISSION</span><span class="status-chip" id="missionState">—</span></div>
+            <h2 id="missionName">Waiting for mission data</h2>
+            <p id="missionObjective">—</p>
+            <div class="mission-meta">
+              <span><b>Lane</b><strong id="missionLane">—</strong></span>
+              <span><b>Success measure</b><strong id="missionSuccess">—</strong></span>
+            </div>
+          </article>
+          <article class="panel goal-card">
+            <div class="panel-kicker"><span>FIRST ECONOMIC MILESTONE</span><span class="accent-label">SUBSCRIPTION</span></div>
+            <div class="goal-amount"><span id="goalCurrent">$0.00</span><small> / <span id="goalTarget">$20.00</span></small></div>
+            <p>Confirmed reserve toward the monthly subscription target.</p>
+            <div class="progress-track" aria-label="Subscription reserve progress"><span id="goalProgress"></span></div>
+            <div class="goal-foot"><span id="goalPercent">0%</span><span id="goalQuality">Awaiting payout evidence</span></div>
+          </article>
+        </section>
+
+        <section class="section-block section-anchor" id="work">
+          <div class="section-heading">
+            <div><p class="eyebrow">WORK GRAPH</p><h2>See the handoff, not just the headline.</h2></div>
+            <p class="section-note">Every active node should trace back to a packet or telemetry event.</p>
+          </div>
+          <div class="topology panel" id="topology" aria-label="Manager to worker work graph">
+            <div class="topology-line"></div>
+            <div class="topology-node" data-node="manager"><span class="node-icon">M</span><b>Manager</b><small id="topologyManager">—</small></div>
+            <div class="topology-node" data-node="agent"><span class="node-icon">A</span><b>AI agents</b><small id="topologyAgent">—</small></div>
+            <div class="topology-node" data-node="worker"><span class="node-icon">W</span><b>Specialist worker</b><small id="topologyWorker">—</small></div>
+            <div class="topology-node" data-node="evidence"><span class="node-icon">E</span><b>Evidence</b><small id="topologyEvidence">—</small></div>
+            <div class="topology-node" data-node="treasury"><span class="node-icon">$</span><b>Treasury</b><small id="topologyTreasury">—</small></div>
+          </div>
+
+          <div class="split-grid">
+            <article class="panel">
+              <div class="panel-kicker"><span>WORK PACKETS</span><span id="packetCount">—</span></div>
+              <div class="packet-list" id="packetList"><div class="loading-row">Loading work packets…</div></div>
+            </article>
+            <article class="panel">
+              <div class="panel-kicker"><span>AGENT ROSTER</span><span id="agentCount">—</span></div>
+              <div class="agent-list" id="agentList"><div class="loading-row">Loading agents…</div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block section-anchor" id="machine">
+          <div class="section-heading">
+            <div><p class="eyebrow">MACHINE PROOF</p><h2>Useful work needs more than a live process.</h2></div>
+            <p class="section-note" id="machineQuality">Sanitized telemetry</p>
+          </div>
+          <div class="metric-grid panel" id="machineMetrics">
+            <div class="metric"><span>GPU activity</span><strong id="gpuUtil">—</strong><small>accelerator utilization</small></div>
+            <div class="metric"><span>Temperature</span><strong id="gpuTemp">—</strong><small>thermal signal</small></div>
+            <div class="metric"><span>Power draw</span><strong id="gpuPower">—</strong><small>board draw</small></div>
+            <div class="metric"><span>VRAM used</span><strong id="gpuVram">—</strong><small id="gpuVramSub">memory signal</small></div>
+            <div class="metric"><span>CPU activity</span><strong id="cpuUtil">—</strong><small>host utilization</small></div>
+            <div class="metric"><span>Machine uptime</span><strong id="machineUptime">—</strong><small>runtime continuity</small></div>
+          </div>
+          <div class="worker-strip panel">
+            <div><span class="eyebrow">WORKER ADAPTER</span><h3 id="workerType">—</h3><p id="workerNote">—</p></div>
+            <div class="worker-facts"><span><b>Rate</b><strong id="workerRate">—</strong></span><span><b>Accepted shares</b><strong id="acceptedShares">—</strong></span><span><b>Rejected shares</b><strong id="rejectedShares">—</strong></span><span><b>Recovery count</b><strong id="recoveryCount">—</strong></span></div>
+          </div>
+        </section>
+
+        <section class="section-block section-anchor" id="economics">
+          <div class="section-heading">
+            <div><p class="eyebrow">ECONOMIC SCOREBOARD</p><h2>Show what is projected, verified, and received.</h2></div>
+            <p class="section-note">No single optimistic number.</p>
+          </div>
+          <div class="economics-grid">
+            <article class="panel money-card primary-money"><span class="card-label">ESTIMATED CREDIT</span><strong id="estimatedCredit">$0.00</strong><p>Model or pool estimate. Not cash.</p></article>
+            <article class="panel money-card"><span class="card-label">CONFIRMED PAYOUT</span><strong id="confirmedPayout">$0.00</strong><p>Credit verified by a source.</p></article>
+            <article class="panel money-card"><span class="card-label">MONEY RECEIVED</span><strong id="moneyReceived">$0.00</strong><p>Receipt observed in the configured ledger.</p></article>
+            <article class="panel money-card"><span class="card-label">RESERVE BALANCE</span><strong id="reserveAmount">$0.00</strong><p>Applied to the current subscription goal.</p></article>
+          </div>
+          <div class="split-grid finance-lower">
+            <article class="panel wallet-card">
+              <div class="panel-kicker"><span>WALLET PROOF</span><span id="walletVisibility">—</span></div>
+              <h3 id="walletLabel">No receiving wallet connected</h3>
+              <p id="walletMessage">A deployment can opt into a public receiving-address view without exposing wallet credentials.</p>
+              <div class="wallet-address-row"><code id="walletAddress">Not connected</code><button class="button button-small" id="walletToggle" type="button" hidden>Reveal</button></div>
+              <div class="wallet-meta"><span>Balance <b id="walletBalance">—</b></span><span>Last payout <b id="lastPayout">—</b></span></div>
+            </article>
+            <article class="panel accounting-card">
+              <div class="panel-kicker"><span>COST QUALITY</span><span id="costQuality">—</span></div>
+              <h3>Measure honestly before optimizing.</h3>
+              <p id="costMessage">Shared electricity is not assigned a fake precision in the first experiment. The runtime can later add a machine-attributed estimate.</p>
+              <div class="accounting-flow"><span>work</span><i>→</i><span>credit</span><i>→</i><span>received</span><i>→</i><span>reserve</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block section-anchor" id="evidence">
+          <div class="section-heading">
+            <div><p class="eyebrow">PUBLIC EVIDENCE</p><h2>The timeline is the product.</h2></div>
+            <p class="section-note" id="eventCount">—</p>
+          </div>
+          <div class="panel evidence-panel">
+            <div class="evidence-list" id="evidenceList"><div class="loading-row">Loading evidence…</div></div>
+          </div>
+          <div class="reference-row" id="referenceRow"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>MachineManager Revenue Lab</span>
+        <span>Public read-only operations view · <a href="https://github.com/JaronKBragg7337" rel="noreferrer">Repository owner</a></span>
+      </footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
