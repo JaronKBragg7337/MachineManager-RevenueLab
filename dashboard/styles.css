@@ -156,6 +156,14 @@ h1 em { color: var(--cyan); font-style: normal; text-shadow: 0 0 40px rgba(57, 2
 .wallet-address-row code { min-width: 0; overflow: hidden; color: var(--cyan); font-family: "SFMono-Regular", Consolas, monospace; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
 .wallet-meta { display: flex; gap: 25px; margin-top: 13px; color: var(--faint); font-size: .68rem; }
 .wallet-meta b { margin-left: 5px; color: var(--muted); font-weight: 700; }
+.receipt-block { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(100, 157, 220, .18); }
+.receipt-block .card-label { margin-bottom: 9px; }
+.receipt-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed rgba(100, 157, 220, .14); }
+.receipt-row:last-child { border-bottom: 0; }
+.receipt-row strong, .receipt-row small { display: block; }
+.receipt-row strong { font-size: .75rem; }
+.receipt-row small { margin-top: 2px; color: var(--muted); font-size: .64rem; }
+.receipt-row code { max-width: 48%; overflow: hidden; color: var(--cyan); font-family: "SFMono-Regular", Consolas, monospace; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
 .accounting-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 25px; color: var(--cyan); font-size: .72rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .accounting-flow i { color: var(--faint); font-style: normal; }
 

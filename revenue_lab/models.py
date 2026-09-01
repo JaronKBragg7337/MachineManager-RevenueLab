@@ -35,6 +35,14 @@ class VisibilityMode(StrEnum):
     PRIVATE = "private"
 
 
+class ReceiptClassification(StrEnum):
+    EXPECTED = "expected"
+    UNRECOGNIZED = "unrecognized"
+    RETURN_PROPOSED = "return_proposed"
+    RETURN_SENT = "return_sent"
+    RESOLVED = "resolved"
+
+
 @dataclass(slots=True)
 class Mission:
     mission_id: str
@@ -128,6 +136,21 @@ class FinanceSnapshot:
     wallet_balance: float | None = None
     last_payout_at: str | None = None
     note: str = ""
+    receipts: list["ReceiptRecord"] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReceiptRecord:
+    receipt_id: str
+    asset: str
+    amount: float
+    txid: str | None
+    confirmations: int
+    classification: ReceiptClassification
+    status: str
+    observed_at: str
+    source: str
+    note: str = ""
 
 
 @dataclass(slots=True)
@@ -180,4 +203,3 @@ def as_jsonable(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [as_jsonable(item) for item in value]
     return value
-

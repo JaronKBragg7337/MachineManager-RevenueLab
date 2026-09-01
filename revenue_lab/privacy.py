@@ -43,6 +43,36 @@ def _round_money(value: float | None) -> float | None:
     return round(value, 2)
 
 
+def _mask_txid(txid: str | None) -> str | None:
+    if not txid:
+        return None
+    if len(txid) <= 16:
+        return "*" * len(txid)
+    return f"{txid[:8]}...{txid[-8:]}"
+
+
+def _project_receipts(finance: FinanceSnapshot, mode: VisibilityMode) -> list[dict[str, Any]]:
+    if mode is VisibilityMode.PRIVATE:
+        return []
+    result = []
+    for receipt in finance.receipts:
+        result.append(
+            {
+                "receipt_id": receipt.receipt_id,
+                "asset": receipt.asset,
+                "amount": None if mode is VisibilityMode.MASKED else (_round_money(receipt.amount) if mode is VisibilityMode.PUBLIC_ROUNDED else receipt.amount),
+                "txid": _mask_txid(receipt.txid) if mode is not VisibilityMode.PUBLIC_EXACT else receipt.txid,
+                "confirmations": receipt.confirmations,
+                "classification": receipt.classification.value,
+                "status": receipt.status,
+                "observed_at": receipt.observed_at,
+                "source": receipt.source,
+                "note": receipt.note if mode is VisibilityMode.PUBLIC_EXACT else None,
+            }
+        )
+    return result
+
+
 def project_finance(finance: FinanceSnapshot) -> dict[str, Any]:
     """Return only the financial fields permitted by the selected visibility mode."""
 
@@ -63,6 +93,7 @@ def project_finance(finance: FinanceSnapshot) -> dict[str, Any]:
                 "money_received": None,
                 "reserve_amount": None,
                 "wallet": None,
+                "receipts": [],
                 "public_note": "Finance is private in this deployment.",
             }
         )
@@ -81,6 +112,7 @@ def project_finance(finance: FinanceSnapshot) -> dict[str, Any]:
                     "address": _mask_address(finance.wallet_public_address),
                     "balance": None,
                 },
+                "receipts": _project_receipts(finance, mode),
                 "public_note": "Financial activity is present only as a masked signal.",
             }
         )
@@ -106,6 +138,7 @@ def project_finance(finance: FinanceSnapshot) -> dict[str, Any]:
                 "balance": formatter(finance.wallet_balance),
                 "last_payout_at": finance.last_payout_at,
             },
+            "receipts": _project_receipts(finance, mode),
             "public_note": finance.note,
         }
     )
@@ -150,4 +183,3 @@ def validate_public_payload(payload: Any) -> None:
                 visit(child, f"{path}[{index}]")
 
     visit(payload)
-

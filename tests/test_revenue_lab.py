@@ -7,7 +7,7 @@ from pathlib import Path
 
 from revenue_lab.ledger import EventLedger
 from revenue_lab.economics import assess_reserve, reconcile_reserve
-from revenue_lab.models import EventRecord, FinanceSnapshot, VisibilityMode, as_jsonable, utc_now
+from revenue_lab.models import EventRecord, FinanceSnapshot, ReceiptRecord, VisibilityMode, as_jsonable, utc_now
 from revenue_lab.privacy import project_finance, sanitize_snapshot, validate_public_payload
 from revenue_lab.preview import build_preview_snapshot
 from revenue_lab.publisher import publish_snapshot
@@ -15,6 +15,7 @@ from revenue_lab.runtime import RevenueLabRuntime
 from revenue_lab.progress import ProgressParseError, parse_progress
 from revenue_lab.probes import parse_nvidia_csv
 from revenue_lab.process_worker import ProcessWorkerAdapter, ProcessWorkerSpec
+from revenue_lab.finance import can_propose_return, classify_receipt, mark_return_proposed
 from revenue_lab.state import transition
 from revenue_lab.workers import BitcoinSha256dStratumSpec
 
@@ -177,6 +178,25 @@ class MissionContractTests(unittest.TestCase):
         adapter = ProcessWorkerAdapter(spec)
         self.assertEqual(spec.command[0], "worker.exe")
         self.assertEqual(adapter.observe().evidence_quality, "not_started")
+
+    def test_unrecognized_confirmed_receipt_requires_a_separate_return_proposal(self) -> None:
+        receipt = ReceiptRecord(
+            receipt_id="receipt-001",
+            asset="BTC",
+            amount=0.001,
+            txid="a" * 64,
+            confirmations=1,
+            classification=classify_receipt(expected=False, confirmations=1),
+            status="confirmed",
+            observed_at=utc_now(),
+            source="wallet-observer",
+        )
+        self.assertTrue(can_propose_return(receipt))
+        proposed = mark_return_proposed(receipt)
+        self.assertEqual(proposed.classification.value, "return_proposed")
+        public = project_finance(FinanceSnapshot(visibility=VisibilityMode.PUBLIC_ROUNDED, receipts=[receipt]))
+        self.assertEqual(public["receipts"][0]["txid"], "aaaaaaaa...aaaaaaaa")
+        self.assertEqual(public["receipts"][0]["amount"], 0.0)
 
 
 if __name__ == "__main__":

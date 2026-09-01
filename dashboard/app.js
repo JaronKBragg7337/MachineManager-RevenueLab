@@ -129,6 +129,14 @@ function renderFinance(finance = {}) {
     toggle.textContent = state.walletRevealed ? "Hide" : "Reveal";
   }
   setText("costQuality", safe(finance.cost_quality, "unknown").replaceAll("_", " "));
+  const receipts = finance.receipts || [];
+  const receiptList = dom("receiptList");
+  if (!receipts.length) {
+    receiptList.innerHTML = '<div class="empty-row">No receipts observed.</div>';
+  } else {
+    receiptList.innerHTML = receipts.map((receipt) => `
+      <div class="receipt-row"><div><strong>${esc(receipt.amount === null ? "Amount hidden" : `${fmtNumber(receipt.amount)} ${receipt.asset || ""}`)}</strong><small>${esc((receipt.classification || "observed").replaceAll("_", " "))} · ${esc(receipt.status || "unverified")}</small></div><code>${esc(receipt.txid || "no txid")}</code></div>`).join("");
+  }
 }
 
 function renderEvents(events = []) {

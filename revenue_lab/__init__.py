@@ -8,6 +8,8 @@ from .models import (
     Mission,
     MissionState,
     PublicSnapshot,
+    ReceiptClassification,
+    ReceiptRecord,
     VisibilityMode,
     WorkPacket,
     WorkerSnapshot,
@@ -17,6 +19,7 @@ from .workers import BitcoinSha256dStratumSpec, WorkerAdapter, WorkerObservation
 from .probes import parse_nvidia_csv, sample_nvidia
 from .progress import ProgressParseError, parse_progress, read_progress
 from .process_worker import ProcessWorkerAdapter, ProcessWorkerSpec
+from .finance import can_propose_return, classify_receipt, mark_return_proposed
 
 __all__ = [
     "AgentSnapshot",
@@ -26,6 +29,8 @@ __all__ = [
     "Mission",
     "MissionState",
     "PublicSnapshot",
+    "ReceiptClassification",
+    "ReceiptRecord",
     "VisibilityMode",
     "WorkPacket",
     "WorkerSnapshot",
@@ -41,4 +46,7 @@ __all__ = [
     "read_progress",
     "ProcessWorkerAdapter",
     "ProcessWorkerSpec",
+    "can_propose_return",
+    "classify_receipt",
+    "mark_return_proposed",
 ]
