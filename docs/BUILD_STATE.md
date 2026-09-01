@@ -22,7 +22,7 @@ Last checkpoint: 2026-09-01
 - A bounded synthetic runtime now publishes real work packets and manager state changes into the same SQLite/public projection path.
 - NVIDIA machine-probe parsing and an allowlisted worker-progress parser are now implemented.
 - A generic external-process adapter now separates launch/liveness from useful-progress evidence.
-- Sixteen core tests plus the public-data validator are passing.
+- Seventeen core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 
@@ -33,4 +33,4 @@ Last checkpoint: 2026-09-01
 
 ## Public handoff status
 
-The public repository is [MachineManager-RevenueLab](https://github.com/JaronKBragg7337/MachineManager-RevenueLab). Pages is configured for the `main` branch root and forwards to [Mission Control](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/dashboard/). The first branch-source deployment is pending verification after the next push.
+The public repository is [MachineManager-RevenueLab](https://github.com/JaronKBragg7337/MachineManager-RevenueLab). Pages is configured for the `main` branch root and forwards to [Mission Control](https://jaronkbragg7337.github.io/MachineManager-RevenueLab/dashboard/). The branch-source deployment is verified: the remote page loads without login, the root redirects, and the dashboard renders its preview data.
