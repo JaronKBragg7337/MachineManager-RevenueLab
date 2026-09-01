@@ -11,7 +11,10 @@ The first mission is a Bitcoin proof-of-work experiment. Bitcoin is the first wo
 - An honest dashboard shell that distinguishes design-preview data from live worker evidence.
 - A SQLite event-ledger boundary for local runtime history.
 - A worker-adapter boundary for a future CUDA SHA-256d Stratum miner.
-- Tests for event serialization and public-data sanitization.
+- A reusable manager loop that distinguishes fresh progress from process liveness,
+  recovers bounded failures, and escalates repeated failures.
+- Deterministic crash, stall, false-liveness, and repeated-failure scenarios.
+- Tests for event serialization, manager recovery, and public-data sanitization.
 
 The older Puzzle #71 MachineManager remains a separate experiment and reference implementation. This repository does not replace it or change its protected worker.
 
@@ -33,6 +36,17 @@ python scripts/run_demo_runtime.py --iterations 20 --interval 2
 ```
 
 The page will show real synthetic packets and state changes as they are published. It remains marked **SYNTHETIC DEMO**; these packets are runtime evidence tests, not Bitcoin work or revenue.
+
+Exercise the manager's bounded recovery behavior without using the GPU or any
+external service:
+
+```powershell
+python scripts/run_reliability_scenarios.py
+```
+
+The command writes an ignored local report under `runtime/` and runs five
+scenarios: healthy progress, a one-time crash, a one-time stall, a process-only
+false-liveness signal, and a repeated failure that must escalate.
 
 Run the standard-library test suite with:
 
@@ -65,5 +79,6 @@ The dashboard is currently an honest design preview while the live worker adapte
 
 - [Project brief](docs/PROJECT_BRIEF.md) — the durable intent and decisions from the design conversation.
 - [Architecture](docs/ARCHITECTURE.md) — the interchangeable mission and evidence model.
+- [Manager runtime](docs/MANAGER_RUNTIME.md) — progress evidence, bounded recovery, and reliability scenarios.
 - [Build state](docs/BUILD_STATE.md) — the checkpoint that survives context compaction.
 - [Deployment](docs/DEPLOYMENT.md) — how the public no-login dashboard is served.

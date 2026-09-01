@@ -7,7 +7,18 @@ from pathlib import Path
 
 from revenue_lab.ledger import EventLedger
 from revenue_lab.economics import assess_reserve, reconcile_reserve
-from revenue_lab.models import EventRecord, FinanceSnapshot, ReceiptRecord, VisibilityMode, as_jsonable, utc_now
+from revenue_lab.manager import ManagerPolicy, MissionManager
+from revenue_lab.models import (
+    AgentSnapshot,
+    EventRecord,
+    FinanceSnapshot,
+    Mission,
+    MissionState,
+    ReceiptRecord,
+    VisibilityMode,
+    as_jsonable,
+    utc_now,
+)
 from revenue_lab.privacy import project_finance, sanitize_snapshot, validate_public_payload
 from revenue_lab.preview import build_preview_snapshot
 from revenue_lab.publisher import publish_snapshot
@@ -17,6 +28,7 @@ from revenue_lab.probes import parse_nvidia_csv
 from revenue_lab.process_worker import ProcessWorkerAdapter, ProcessWorkerSpec
 from revenue_lab.finance import can_propose_return, classify_receipt, mark_return_proposed
 from revenue_lab.state import transition
+from revenue_lab.synthetic import ScenarioWorker
 from revenue_lab.workers import BitcoinSha256dStratumSpec
 
 
@@ -197,6 +209,99 @@ class MissionContractTests(unittest.TestCase):
         public = project_finance(FinanceSnapshot(visibility=VisibilityMode.PUBLIC_ROUNDED, receipts=[receipt]))
         self.assertEqual(public["receipts"][0]["txid"], "aaaaaaaa...aaaaaaaa")
         self.assertEqual(public["receipts"][0]["amount"], 0.0)
+
+
+class ManagerRuntimeTests(unittest.TestCase):
+    def _manager(self, root: Path, scenario: str, *, max_recoveries: int = 1) -> MissionManager:
+        mission = Mission(
+            mission_id=f"mission-{scenario}",
+            name=f"Synthetic {scenario}",
+            objective="Exercise the manager contract with a deterministic worker.",
+            lane="synthetic",
+            state=MissionState.PLANNED,
+            target_amount=None,
+        )
+        agents = [
+            AgentSnapshot(
+                agent_id="manager-core",
+                role="Mission manager",
+                provider="local runtime",
+                model="manager-controller",
+                state="READY",
+                current_action="Preparing.",
+            ),
+            AgentSnapshot(
+                agent_id="evidence-steward",
+                role="Evidence steward",
+                provider="local runtime",
+                model="sanitizer",
+                state="READY",
+                current_action="Preparing.",
+            ),
+        ]
+        return MissionManager(
+            mission,
+            ScenarioWorker(scenario=scenario, worker_id=f"worker-{scenario}"),
+            agents,
+            root / scenario / "data",
+            root / scenario / "events.sqlite3",
+            finance=FinanceSnapshot(visibility=VisibilityMode.PRIVATE, target_amount=None),
+            policy=ManagerPolicy(stall_after_observations=2, max_recoveries=max_recoveries),
+            mode="test-runtime",
+        )
+
+    def test_healthy_worker_publishes_fresh_progress_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manager = self._manager(Path(directory), "healthy")
+            snapshot = manager.tick()
+            manager.close()
+            self.assertEqual(snapshot.mission.state, MissionState.RUNNING)
+            self.assertEqual(snapshot.work_packets[-1].state, "COMPLETE")
+            self.assertEqual(snapshot.worker.evidence_quality, "synthetic_observation")
+            self.assertGreaterEqual(len(snapshot.events), 5)
+
+    def test_false_liveness_becomes_stall_and_recovers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manager = self._manager(Path(directory), "false_liveness_once")
+            manager.tick()
+            recovered = manager.tick()
+            manager.close()
+            self.assertEqual(recovered.mission.state, MissionState.RUNNING)
+            self.assertEqual(recovered.worker.recovery_count, 1)
+            self.assertTrue(any(event.event_type == "worker_recovery_started" for event in recovered.events))
+            self.assertTrue(any(event.new_state == "STALLED" for event in recovered.events))
+
+    def test_crash_recovers_without_executive_intervention(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manager = self._manager(Path(directory), "crash_once")
+            recovered = manager.tick()
+            manager.close()
+            self.assertEqual(recovered.mission.state, MissionState.RUNNING)
+            self.assertEqual(recovered.worker.recovery_count, 1)
+            self.assertTrue(any(event.new_state == "FAILED" for event in recovered.events))
+
+    def test_repeated_failure_escalates_at_recovery_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manager = self._manager(Path(directory), "repeat_failure", max_recoveries=1)
+            manager.tick()
+            escalated = manager.tick()
+            manager.close()
+            self.assertEqual(escalated.mission.state, MissionState.ESCALATED)
+            self.assertEqual(escalated.worker.state, "ESCALATED")
+            self.assertTrue(any(event.event_type == "manager_escalated" for event in escalated.events))
+
+    def test_new_manager_keeps_prior_sqlite_events_and_uses_new_event_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = self._manager(root, "healthy")
+            first.tick()
+            first.close()
+            second = self._manager(root, "healthy")
+            snapshot = second.tick()
+            second.close()
+            self.assertGreater(len(snapshot.events), 1)
+            event_ids = [event.event_id for event in snapshot.events]
+            self.assertEqual(len(event_ids), len(set(event_ids)))
 
 
 if __name__ == "__main__":
