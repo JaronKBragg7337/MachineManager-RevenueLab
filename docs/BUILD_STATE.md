@@ -5,7 +5,9 @@ Last checkpoint: 2026-09-01
 ## Current checkpoint
 
 - New repository: `machine-manager-revenue-lab` under the Codex Active projects workspace.
-- Status: foundation, reusable manager runtime, and local CUDA proof-of-work benchmark are complete; live pool integration remains pending.
+- Status: foundation, reusable manager runtime, native loopback worker, and
+  local CUDA proof-of-work evidence are complete; live pool integration remains
+  pending.
 - The legacy Puzzle #71 MachineManager remains a separate reference and is not being modified by this project.
 - No live Bitcoin mining worker has been connected here yet.
 - No wallet address, private key, seed, credential, token, pool secret, or raw machine log has been added here.
@@ -36,19 +38,29 @@ Last checkpoint: 2026-09-01
 - A loopback-only mock Stratum server now passes the subscribe, authorize,
   notify, independent header reconstruction, target comparison, and submit
   sequence. It binds only to localhost during tests and uses no credentials.
+- A focused native CUDA + Stratum worker now builds with the installed Visual
+  Studio/CUDA toolchain, publishes allowlisted aggregate progress, and passes
+  the loopback verifier with one accepted share, zero rejected shares, hash
+  count, and best-share difficulty evidence.
+- The native worker now runs through `ProcessWorkerAdapter` and
+  `MissionManager`; the manager records fresh progress, machine evidence, and
+  verified `RUNNING -> VERIFYING -> COMPLETE` transitions even when the
+  bounded worker exits immediately after its result. Progress files are
+  atomically replaced at the worker boundary.
 - GBXminer `develop` is recorded as an audited third-party reference, not an
   accepted worker. Its CUDA translation units compile under an isolated CUDA
   13 / `sm_89` compatibility pass, but the final link is blocked by the
   upstream tree's mixed MSVC/MinGW C++ ABI. No GBXminer binary was adopted or
   launched; see [the build audit](GBXMINER_BUILD.md).
-- Thirty-four core tests plus the public-data validator are passing.
+- Thirty-seven core tests plus the public-data validator are passing.
 
 ## Next implementation checkpoint
 
-1. Implement or select a focused native Stratum worker and connect it to the
-   local mock without credentials.
-2. Verify its progress report against the allowlisted manager contract.
-3. Connect pool-job observations to the worker contract and economics ledger.
+1. Add focused network/TLS and live-job-rotation checks to the native worker
+   before any real endpoint is configured.
+2. Connect pool-job observations to the worker contract and economics ledger.
+3. Choose a pool and receiving configuration explicitly; keep both outside the
+   repository and public projection.
 4. Review the Live Reference Principle source before finalizing reference
    ingestion.
 

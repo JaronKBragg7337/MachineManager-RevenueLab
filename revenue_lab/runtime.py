@@ -176,6 +176,7 @@ class RevenueLabRuntime:
             lane=self.mission.lane,
             rate=metrics.get("rate"),
             rate_unit=metrics.get("rate_unit"),
+            hashes_attempted=metrics.get("hashes"),
             accepted_shares=metrics.get("accepted_shares"),
             rejected_shares=metrics.get("rejected_shares"),
             recovery_count=0,

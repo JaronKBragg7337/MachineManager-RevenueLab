@@ -55,6 +55,7 @@ class ManagerPolicy:
 _PUBLIC_METRIC_KEYS = {
     "rate",
     "rate_unit",
+    "hashes",
     "hashrate",
     "hashrate_unit",
     "accepted_shares",
@@ -220,6 +221,7 @@ class MissionManager:
             lane=self.mission.lane,
             rate=metrics.get("rate", metrics.get("hashrate")),
             rate_unit=metrics.get("rate_unit", metrics.get("hashrate_unit")),
+            hashes_attempted=metrics.get("hashes"),
             accepted_shares=metrics.get("accepted_shares"),
             rejected_shares=metrics.get("rejected_shares"),
             best_share_difficulty=metrics.get("best_share_difficulty"),
@@ -467,6 +469,33 @@ class MissionManager:
         elif observation.state == "STALLED":
             self._append_packet(observation, fresh=False)
             self._handle_unhealthy("stall", "worker_reported_stalled")
+        elif observation.state == "COMPLETE":
+            if cursor_changed:
+                self._last_cursor = observation.progress_cursor
+                self._no_progress_observations = 0
+                self._last_progress_at = utc_now()
+                self._append_packet(observation, fresh=True)
+                self._event(
+                    "health_check",
+                    metrics=metrics,
+                    action="Validated the terminal aggregate cursor from the bounded worker.",
+                    outcome="Worker completed with fresh useful-work evidence.",
+                    public_summary="Worker completion was verified with a fresh useful-work packet.",
+                )
+                self._transition(
+                    MissionState.VERIFYING,
+                    "Entered verification after the worker reported completion.",
+                    "The manager is checking the terminal evidence packet before closing the mission.",
+                )
+                self._transition(
+                    MissionState.COMPLETE,
+                    "Accepted the worker's terminal evidence.",
+                    "The bounded mission completed with a fresh aggregate progress cursor.",
+                )
+                self._update_agents("Verified the worker's terminal packet and completed the bounded mission.", utc_now())
+            else:
+                self._append_packet(observation, fresh=False)
+                self._handle_unhealthy("failure", "complete_without_fresh_progress")
         elif cursor_changed:
             self._last_cursor = observation.progress_cursor
             self._no_progress_observations = 0

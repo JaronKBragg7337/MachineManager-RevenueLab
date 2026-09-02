@@ -19,6 +19,7 @@ PUBLIC_PROGRESS_KEYS = {
     "progress_cursor",
     "rate",
     "rate_unit",
+    "hashes",
     "accepted_shares",
     "rejected_shares",
     "best_share_difficulty",
@@ -69,4 +70,3 @@ def read_progress(path: str | Path) -> WorkerObservation:
     except (OSError, json.JSONDecodeError) as error:
         raise ProgressParseError("worker progress could not be read") from error
     return parse_progress(payload)
-

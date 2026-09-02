@@ -95,6 +95,7 @@ class WorkerSnapshot:
     lane: str
     rate: float | None = None
     rate_unit: str | None = None
+    hashes_attempted: int | None = None
     accepted_shares: int | None = None
     rejected_shares: int | None = None
     best_share_difficulty: float | None = None

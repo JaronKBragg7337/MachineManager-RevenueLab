@@ -64,11 +64,29 @@ managed projection locally, point `--dashboard-data` at a directory served by
 an HTTP server. The service still uses only the deterministic synthetic worker
 until a real adapter is explicitly configured.
 
+The focused native worker can now be exercised through the same manager
+boundary without a live endpoint:
+
+```powershell
+python scripts/run_managed_cuda_worker.py
+```
+
+This local acceptance path starts a loopback mock, launches the native CUDA
+worker with a bounded one-share objective, reads its aggregate progress file,
+samples NVIDIA machine evidence, and records the resulting work packet and
+SQLite events. The aggregate worker record carries hashes attempted, rate,
+share counts, best-share difficulty, and pool connection state. A worker's
+terminal COMPLETE report is retained when its process has already exited; a
+missing first report is treated as startup pending rather than an immediate
+stall. The output remains under ignored `runtime/` and is not the public
+preview.
+
 ## Future live lane
 
-The first live adapter can implement the existing `WorkerAdapter` protocol and
-provide a progress report with aggregate metrics such as hashrate, accepted
-shares, rejected shares, best share difficulty, pool connection, and uptime.
-The real worker and pool must be selected and configured separately; this
-runtime does not invent a binary, launch arguments, pool endpoint, or wallet
-destination.
+The focused native worker implements the first project-owned adapter path, but
+it is still accepted only against the loopback endpoint. A future live adapter
+must add endpoint/TLS checks, job rotation, pool-specific share difficulty,
+receiving configuration, and economic reconciliation before it is run
+unattended. The real worker and pool configuration belong in ignored local
+runtime state; the public dashboard must continue to distinguish local proof
+from live pool credit.

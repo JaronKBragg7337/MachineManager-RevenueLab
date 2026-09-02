@@ -67,6 +67,17 @@ class ProcessWorkerAdapter:
                 evidence_quality="not_started",
             )
         if self.process.poll() is not None:
+            # A bounded worker may publish its terminal aggregate report and
+            # exit in the same moment. Preserve a verified COMPLETE/STOPPED
+            # report instead of converting that clean result into a process
+            # failure. Any other exited process remains FAILED.
+            if self.spec.progress_file is not None:
+                try:
+                    terminal_observation = read_progress(self.spec.progress_file)
+                except ProgressParseError:
+                    terminal_observation = None
+                if terminal_observation is not None and terminal_observation.state in {"COMPLETE", "STOPPED"}:
+                    return terminal_observation
             return WorkerObservation(
                 worker_id=self.worker_id,
                 state="FAILED",
@@ -81,6 +92,14 @@ class ProcessWorkerAdapter:
                 progress_cursor=None,
                 evidence_quality="process_only",
                 note="A progress file is not configured; process liveness is not proof of useful work.",
+            )
+        if not self.spec.progress_file.is_file():
+            return WorkerObservation(
+                worker_id=self.worker_id,
+                state="STARTING",
+                progress_cursor=None,
+                evidence_quality="progress_pending",
+                note="The worker is running but has not published its first aggregate progress report.",
             )
         try:
             return read_progress(self.spec.progress_file)
@@ -109,4 +128,3 @@ class ProcessWorkerAdapter:
         resources = dict(self._resources)
         self.stop(reason)
         self.start(objective, resources)
-

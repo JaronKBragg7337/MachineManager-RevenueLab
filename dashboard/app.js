@@ -7,6 +7,11 @@ const fmtMoney = (value, currency = "USD") => {
 };
 
 const fmtNumber = (value, suffix = "") => typeof value === "number" ? `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value)}${suffix}` : "—";
+const fmtDifficulty = (value) => {
+  if (typeof value !== "number") return "—";
+  if (value === 0) return "0";
+  return value < 0.01 ? value.toExponential(2) : fmtNumber(value);
+};
 const fmtDate = (value) => {
   if (!value) return "—";
   const date = new Date(value);
@@ -92,6 +97,8 @@ function renderWorker(worker = {}) {
   setText("workerType", safe(worker.worker_type, "No worker connected"));
   setText("workerNote", safe(worker.note, "No worker note published."));
   setText("workerRate", worker.rate === null || worker.rate === undefined ? "—" : `${fmtNumber(worker.rate)} ${safe(worker.rate_unit, "")}`);
+  setText("hashesAttempted", fmtNumber(worker.hashes_attempted));
+  setText("bestShareDifficulty", fmtDifficulty(worker.best_share_difficulty));
   setText("acceptedShares", fmtNumber(worker.accepted_shares));
   setText("rejectedShares", fmtNumber(worker.rejected_shares));
   setText("recoveryCount", fmtNumber(worker.recovery_count, ""));

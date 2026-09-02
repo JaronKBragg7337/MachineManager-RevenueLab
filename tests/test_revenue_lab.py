@@ -32,6 +32,38 @@ from revenue_lab.synthetic import ScenarioWorker
 from revenue_lab.workers import BitcoinSha256dStratumSpec
 
 
+class CompletedWorker:
+    worker_id = "completed-worker-001"
+    worker_type = "Bounded completion test worker"
+
+    def __init__(self) -> None:
+        self.state = "NOT_CONNECTED"
+
+    def start(self, objective: str, resources: dict[str, object]) -> None:
+        del objective, resources
+        self.state = "RUNNING"
+
+    def observe(self):
+        self.state = "COMPLETE"
+        from revenue_lab.workers import WorkerObservation
+
+        return WorkerObservation(
+            worker_id=self.worker_id,
+            state="COMPLETE",
+            progress_cursor="complete-000001",
+            metrics={"rate": 10.0, "rate_unit": "units/s"},
+            evidence_quality="bounded_test_worker",
+        )
+
+    def stop(self, reason: str) -> None:
+        del reason
+        self.state = "STOPPED"
+
+    def recover(self, reason: str) -> None:
+        del reason
+        self.state = "RUNNING"
+
+
 class PublicProjectionTests(unittest.TestCase):
     def test_preview_is_explicitly_not_live(self) -> None:
         snapshot = build_preview_snapshot()
@@ -163,6 +195,7 @@ class MissionContractTests(unittest.TestCase):
                 "progress_cursor": "job-42",
                 "rate": 2.1,
                 "rate_unit": "GH/s",
+                "hashes": 2048,
                 "accepted_shares": 7,
                 "rejected_shares": 1,
                 "pool_connected": True,
@@ -170,6 +203,7 @@ class MissionContractTests(unittest.TestCase):
             }
         )
         self.assertEqual(observation.metrics["accepted_shares"], 7)
+        self.assertEqual(observation.metrics["hashes"], 2048)
         self.assertNotIn("raw_log_line", observation.metrics)
         with self.assertRaises(ProgressParseError):
             parse_progress({"worker_id": "btc-worker-001"})
@@ -190,6 +224,55 @@ class MissionContractTests(unittest.TestCase):
         adapter = ProcessWorkerAdapter(spec)
         self.assertEqual(spec.command[0], "worker.exe")
         self.assertEqual(adapter.observe().evidence_quality, "not_started")
+
+    def test_process_adapter_keeps_terminal_progress_after_clean_process_exit(self) -> None:
+        class FinishedProcess:
+            def poll(self):
+                return 0
+
+        with tempfile.TemporaryDirectory() as directory:
+            progress_file = Path(directory) / "progress.json"
+            progress_file.write_text(
+                json.dumps(
+                    {
+                        "worker_id": "bounded-worker",
+                        "state": "COMPLETE",
+                        "progress_cursor": "complete-1",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            adapter = ProcessWorkerAdapter(
+                ProcessWorkerSpec(
+                    worker_id="bounded-worker",
+                    worker_type="bounded",
+                    executable="worker.exe",
+                    progress_file=progress_file,
+                )
+            )
+            adapter.process = FinishedProcess()
+            observation = adapter.observe()
+            self.assertEqual(observation.state, "COMPLETE")
+            self.assertEqual(observation.progress_cursor, "complete-1")
+
+    def test_process_adapter_reports_startup_pending_before_first_progress_file(self) -> None:
+        class RunningProcess:
+            def poll(self):
+                return None
+
+        with tempfile.TemporaryDirectory() as directory:
+            adapter = ProcessWorkerAdapter(
+                ProcessWorkerSpec(
+                    worker_id="starting-worker",
+                    worker_type="starting",
+                    executable="worker.exe",
+                    progress_file=Path(directory) / "not-created-yet.json",
+                )
+            )
+            adapter.process = RunningProcess()
+            observation = adapter.observe()
+            self.assertEqual(observation.state, "STARTING")
+            self.assertEqual(observation.evidence_quality, "progress_pending")
 
     def test_unrecognized_confirmed_receipt_requires_a_separate_return_proposal(self) -> None:
         receipt = ReceiptRecord(
@@ -212,7 +295,7 @@ class MissionContractTests(unittest.TestCase):
 
 
 class ManagerRuntimeTests(unittest.TestCase):
-    def _manager(self, root: Path, scenario: str, *, max_recoveries: int = 1) -> MissionManager:
+    def _manager(self, root: Path, scenario: str, *, max_recoveries: int = 1, worker=None) -> MissionManager:
         mission = Mission(
             mission_id=f"mission-{scenario}",
             name=f"Synthetic {scenario}",
@@ -241,7 +324,7 @@ class ManagerRuntimeTests(unittest.TestCase):
         ]
         return MissionManager(
             mission,
-            ScenarioWorker(scenario=scenario, worker_id=f"worker-{scenario}"),
+            worker or ScenarioWorker(scenario=scenario, worker_id=f"worker-{scenario}"),
             agents,
             root / scenario / "data",
             root / scenario / "events.sqlite3",
@@ -302,6 +385,16 @@ class ManagerRuntimeTests(unittest.TestCase):
             self.assertGreater(len(snapshot.events), 1)
             event_ids = [event.event_id for event in snapshot.events]
             self.assertEqual(len(event_ids), len(set(event_ids)))
+
+    def test_bounded_worker_completion_enters_verifying_then_complete(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manager = self._manager(Path(directory), "healthy", worker=CompletedWorker())
+            completed = manager.tick()
+            manager.close()
+            self.assertEqual(completed.mission.state, MissionState.COMPLETE)
+            self.assertEqual(completed.worker.state, "COMPLETE")
+            self.assertTrue(any(event.new_state == "VERIFYING" for event in completed.events))
+            self.assertTrue(any(event.new_state == "COMPLETE" for event in completed.events))
 
 
 if __name__ == "__main__":

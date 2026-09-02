@@ -10,11 +10,13 @@ The first mission is a Bitcoin proof-of-work experiment. Bitcoin is the first wo
 - A privacy-aware public snapshot format with exact, rounded, masked, and private finance views.
 - An honest dashboard shell that distinguishes design-preview data from live worker evidence.
 - A SQLite event-ledger boundary for local runtime history.
-- A worker-adapter boundary for a future CUDA SHA-256d Stratum miner.
+- A worker-adapter boundary with a focused native CUDA SHA-256d Stratum implementation.
 - An offline Stratum contract for validating jobs, building headers, checking
   targets, and constructing submit parameters without contacting a pool.
 - A loopback-only mock Stratum server that independently verifies submitted
   shares before any real endpoint is considered.
+- A focused native CUDA + Stratum worker that passes the loopback verifier and
+  publishes an allowlisted aggregate progress record for the manager.
 - A credential-free CUDA SHA-256d benchmark that verifies the Bitcoin genesis
   header before measuring bounded RTX 4060 work.
 - A reusable manager loop that distinguishes fresh progress from process liveness,
@@ -53,6 +55,23 @@ python scripts/run_reliability_scenarios.py
 The command writes an ignored local report under `runtime/` and runs five
 scenarios: healthy progress, a one-time crash, a one-time stall, a process-only
 false-liveness signal, and a repeated failure that must escalate.
+
+Build and run the focused native worker against the credential-free loopback
+Stratum server:
+
+```powershell
+python scripts/run_local_cuda_worker.py
+```
+
+Run that worker through the real manager, progress parser, SQLite ledger, and
+NVIDIA probe:
+
+```powershell
+python scripts/run_managed_cuda_worker.py
+```
+
+Both commands are local acceptance tests. They do not contact a pool or create
+revenue; see [the focused worker contract](docs/CUDA_WORKER.md).
 
 Verify and measure the local Bitcoin SHA-256d kernel without a pool, wallet, or
 network connection:
@@ -108,6 +127,7 @@ The dashboard is currently an honest design preview while the live worker adapte
 - [Architecture](docs/ARCHITECTURE.md) — the interchangeable mission and evidence model.
 - [Manager runtime](docs/MANAGER_RUNTIME.md) — progress evidence, bounded recovery, and reliability scenarios.
 - [CUDA benchmark](docs/CUDA_BENCHMARK.md) — the local known-vector and throughput check.
+- [Focused CUDA worker](docs/CUDA_WORKER.md) — native loopback Stratum and manager acceptance.
 - [Worker selection](docs/WORKER_SELECTION.md) — candidate audit and gates before pool connection.
 - [GBXminer build audit](docs/GBXMINER_BUILD.md) — why the first third-party candidate remains reference-only.
 - [Offline Stratum contract](docs/STRATUM_CONTRACT.md) — protocol and Bitcoin header/share math with no network access.

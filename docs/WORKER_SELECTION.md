@@ -9,8 +9,8 @@ configuration.
 
 ### Audited reference: GBXminer `develop`
 
-[GBXminer](https://github.com/d0wn3d/gbxminer/tree/develop) is the current
-provisional candidate because its public source advertises CUDA, SHA-256d,
+[GBXminer](https://github.com/d0wn3d/gbxminer/tree/develop) remains an audited
+reference because its public source advertises CUDA, SHA-256d,
 Stratum/GBT, Windows x64, `sm_89` support, and a local monitoring API. The
 repository is GPL-3.0. Its SHA-256d host path includes CPU verification after
 the CUDA scan, which is useful for an evidence-first adapter.
@@ -28,6 +28,21 @@ translation units for `sm_89`, but its final link mixed MSVC CUDA objects with
 MinGW C++ host objects and failed on unresolved C++ ABI/template symbols. No
 GBXminer binary was adopted or launched against a pool; the complete result is
 in the [GBXminer build audit](GBXMINER_BUILD.md).
+
+### Project-owned focused worker
+
+`workers/cuda_sha256d_worker.cu` is now the preferred implementation path for
+the first adapter. It is built natively with the installed CUDA/Visual Studio
+toolchain, uses the same verified SHA-256d device computation as the benchmark,
+implements the initial Stratum V1 handshake and share path, and writes an
+allowlisted progress record. `scripts/run_local_cuda_worker.py` verifies one
+share against the independent loopback server, while
+`scripts/run_managed_cuda_worker.py` verifies the same executable through the
+manager and NVIDIA probe.
+
+This is a local acceptance worker, not a live-pool claim. It still needs
+endpoint/TLS, job-rotation, pool-specific difficulty, and economic reporting
+checks before a real pool is selected.
 
 ### Local kernel benchmark
 
@@ -49,19 +64,25 @@ comparison, not as the selected live binary.
 
 The selected worker must pass these gates in an isolated local run:
 
-1. Build from a pinned public source revision with no credentials in the build
-   tree.
-2. Pass a known SHA-256d vector and a bounded offline benchmark.
+1. Build from a pinned public source revision or this repository's checked-in
+   source with no credentials in the build tree. **PASS locally.**
+2. Pass a known SHA-256d vector and a bounded offline benchmark. **PASS
+   locally.**
 3. Complete subscribe, authorize, job-notification, target-comparison, and
-   submit behavior against a local mock Stratum server.
+   submit behavior against a local mock Stratum server. **PASS locally.**
 4. Expose a small allowlisted aggregate report containing fresh work cursor,
-   hashrate, job freshness, accepted shares, rejected shares, and best share
-   difficulty.
+   hashrate, accepted shares, rejected shares, pool connection, and uptime.
+   **PASS locally.**
 5. Let the manager detect a stale report, worker crash, malformed report, and
-   false process-only liveness signal.
+   false process-only liveness signal. **PASS with synthetic reliability
+   workers; native manager path passes bounded completion.**
 6. Keep the worker's local API bound to loopback and prevent raw command lines,
    credentials, private keys, seeds, or unrestricted worker output from entering
-   the public projection.
+   the public projection. **PASS for the current local acceptance path.**
+
+The remaining live gates are endpoint/TLS behavior, pool-specific difficulty and
+job rotation, long-running resource observation, receiving reconciliation, and
+economic reporting. No live pool is configured at this checkpoint.
 
 Only after those gates pass will a separately chosen pool and receiving
 configuration be connected. That later configuration belongs in ignored local
